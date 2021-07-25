@@ -10,6 +10,7 @@ public class Main {
         boolean endsWith7;
         boolean divisibleBySeven;
         String explanation;
+        String result;
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter a natural number:");
@@ -31,19 +32,23 @@ public class Main {
             endsWith7 = (number < 10) ? (number == 7) : ((number - 7) % 10 == 0);
 
             if (divisibleBySeven && endsWith7) {
+                result = "It is a Buzz number.";
                 explanation = number + " is divisible by 7 and ends with 7.";
 
             } else if (!divisibleBySeven && endsWith7) {
+                result = "It is a Buzz number.";
                 explanation = number + " ends with 7.";
 
             } else if (divisibleBySeven) {
+                result = "It is a Buzz number.";
                 explanation = number + " is divisible by 7.";
 
             } else {
+                result = "It is not a Buzz number.";
                 explanation = number + " is neither divisible by 7 nor does it end with 7.";
             }
 
-            System.out.println(explanation);
+            System.out.println(result.concat("\nExplanation:\n").concat(explanation));
         }
 
     }
