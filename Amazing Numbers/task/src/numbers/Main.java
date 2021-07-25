@@ -17,6 +17,7 @@ public class Main {
 
         number = scanner.nextInt();
 
+        // Checks if the number is a natural number
         if (number < 1) {
             System.out.println("This number is not natural!");
         }
@@ -27,19 +28,22 @@ public class Main {
 
             System.out.println("This number is ".concat(evenOrOdd).concat("."));
 
+            // Checks if the number divisible by 7
             divisibleBySeven = number % 7 == 0;
 
+            // Checks if the number ends with 7
             endsWith7 = (number < 10) ? (number == 7) : ((number - 7) % 10 == 0);
 
-            if (divisibleBySeven && endsWith7) {
+            if (divisibleBySeven && endsWith7) {   // Checks if the number divisible by 7 and ends with 7
                 result = "It is a Buzz number.";
                 explanation = number + " is divisible by 7 and ends with 7.";
 
-            } else if (!divisibleBySeven && endsWith7) {
+
+            } else if (!divisibleBySeven && endsWith7) { // Checks if the number ends with 7
                 result = "It is a Buzz number.";
                 explanation = number + " ends with 7.";
 
-            } else if (divisibleBySeven) {
+            } else if (divisibleBySeven) {   // Checks if the number divisible by 7
                 result = "It is a Buzz number.";
                 explanation = number + " is divisible by 7.";
 
