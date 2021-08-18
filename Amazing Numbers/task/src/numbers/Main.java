@@ -32,47 +32,64 @@ public class Main {
     // Checks to see if numbers are good to be tested for their properties
     public static boolean isGoodToTest(String[] inputArray) {
         int count = 1;
-        boolean goodToGo = true;
         String[] invalidProperties = new String[2];
+
+        /* When a single empty string is entered
+          ERROR CODE -> 0
+        */
+
+        /*The first parameter should be a natural number or zero.
+          ERROR CODE -> 1
+        */
+
+        /*The second parameter should be a natural number.
+          ERROR CODE -> 2
+        */
+
+        /*The property [SUN] is wrong.
+          Available properties: [EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY]
+          ERROR CODE -> 3
+        */
+
+        /*The properties [HOT, SUN] are wrong.
+          Available properties: [EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY]
+          ERROR CODE -> 3
+        */
+
+        /*The request contains mutually exclusive properties: [ODD, EVEN]
+         There are no numbers with these properties.
+          ERROR CODE -> 4
+        */
+
+        int errorCode = -1;
+
         for (String memberInput : inputArray) {
 
             boolean isNumber = checkIfNumber(memberInput);
             if (count == 1 && "".equals(inputArray[0])) {
-                welcomeMessage();
-                goodToGo = false;
+                errorCode = 0;
                 break;
             }
 
             if (count == 1 && (!isNumber || Long.parseLong(memberInput) < 0)) {
-                System.out.println("The first parameter should be a natural number or zero.");
-                goodToGo = false;
+                errorCode = 1;
                 break;
             }
 
 
             if (count == 2 && (!isNumber || Long.parseLong(memberInput) <= 0)) {
-                System.out.println("The second parameter should be a natural number.");
-                goodToGo = false;
+                errorCode = 2;
                 break;
             }
 
             if (count == 3 && !(acceptablePropertiesChecker(memberInput))) {
                 invalidProperties[0] = memberInput.toUpperCase();
-                goodToGo = false;
-
+                errorCode = 3;
             }
 
             if (count == 4 && !(acceptablePropertiesChecker(memberInput))) {
                 invalidProperties[1] = memberInput.toUpperCase();
-
-                //Removes Null Value and empty string the String array
-                invalidProperties = Arrays.stream(invalidProperties)
-                        .filter(s -> (s != null && s.length() > 0))
-                        .toArray(String[]::new);
-
-                System.out.println("The property [" + String.join(", ", invalidProperties) + "] is wrong.");
-                System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, EVEN, ODD]");
-                goodToGo = false;
+                errorCode = 3;
                 break;
             }
             count++;
@@ -80,28 +97,57 @@ public class Main {
 
         // Checks if the two properties are mutually exclusive
         if (inputArray.length > 3 && mutualExclusiveChecker(inputArray[2], inputArray[3])){
-            System.out.println("The request contains mutually exclusive properties: " +
-                    "[" + inputArray[2].toUpperCase() + ", " + inputArray[3].toUpperCase() + "]");
-            System.out.println("There are no numbers with these properties.");
-            goodToGo = false;
+            errorCode = 4;
         }
 
-        return goodToGo;
-    }
-
-    // Checks to see if it is a natural number
-    public static boolean areNaturalNumbers(String[] inputArray) {
-        boolean areNaturals = true;
-        for (String num: inputArray) {
-            if (Long.parseLong(num) < 1) {
-                areNaturals = false;
+        if (errorCode >= 0) {
+            if (errorCode == 0) {
+                welcomeMessage();
             }
+
+            else if (errorCode == 1) {
+                System.out.println("The first parameter should be a natural number or zero.");
+            }
+
+            else if (errorCode == 2) {
+                System.out.println("The second parameter should be a natural number.");
+            }
+
+            else if (errorCode == 3) {
+                //Removes Null Value and empty string the String array
+                invalidProperties = Arrays.stream(invalidProperties)
+                        .filter(s -> (s != null && s.length() > 0))
+                        .toArray(String[]::new);
+
+                String propertiesPluralOrNot;
+                String isOrAre;
+
+                if (invalidProperties.length > 1) {
+                    propertiesPluralOrNot = "properties";
+                    isOrAre = "are";
+                }
+                else {
+                    propertiesPluralOrNot = "property";
+                    isOrAre = "is";
+                }
+
+                System.out.println("The " + propertiesPluralOrNot + " [" + String.join(", ", invalidProperties) + "] " + isOrAre + " wrong.");
+                System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, EVEN, ODD]");
+            }
+
+            else {
+                System.out.println("The request contains mutually exclusive properties: " +
+                        "[" + inputArray[2].toUpperCase() + ", " + inputArray[3].toUpperCase() + "]");
+                System.out.println("There are no numbers with these properties.");
+            }
+
+            return false;
         }
 
-        return  areNaturals;
+        else {
+            return true;
+        }
     }
-
-
     // Checks if the number
     // is an even number
     public static boolean evenChecker(long num) {
@@ -290,17 +336,21 @@ public class Main {
         boolean isPalindromic = palindromicChecker(number);
         boolean isGapful = gapfulChecker(number);
         boolean isSpy = spyChecker(number);
+        boolean isSunny = sunnyChecker(number);
+        boolean isSquare = perfectSquareChecker(number);
 
         String numberWithComma = commaAdder(number);
 
         System.out.println("Properties of " + numberWithComma);
-        System.out.println("\t    buzz: " + isBuzz);
-        System.out.println("\t    duck: " + isDuck);
+        System.out.println("        buzz: " + isBuzz);
+        System.out.println("        duck: " + isDuck);
         System.out.println(" palindromic: " + isPalindromic);
         System.out.println("      gapful: " + isGapful);
         System.out.println("         spy: " + isSpy);
-        System.out.println("\t    even: " + isEven);
-        System.out.println("\t    odd : " + isOdd);
+        System.out.println("      square: " + isSquare);
+        System.out.println("       sunny: " + isSunny);
+        System.out.println("        even: " + isEven);
+        System.out.println("        odd : " + isOdd);
     }
 
 
@@ -326,33 +376,74 @@ public class Main {
 
     // Checks if two properties are mutually exclusive
     public static boolean mutualExclusiveChecker(String firstProp, String secondProp) {
-        if (firstProp.equalsIgnoreCase("EVEN")
-                && secondProp.equalsIgnoreCase("ODD")) {
-            return true;
-        }
+        boolean areMutuallyExclusive = false;
+        ArrayList<ArrayList<String>> listOfMutuallyExclusive = new ArrayList<>();
 
-        else if (firstProp.equalsIgnoreCase("DUCK")
-                && secondProp.equalsIgnoreCase("SPY")) {
-            return true;
-        }
+        ArrayList<String> evenAndOdd = new ArrayList<>();
+        evenAndOdd.add("EVEN");
+        evenAndOdd.add("ODD");
 
-        else return firstProp.equalsIgnoreCase("SUNNY")
-                    && secondProp.equalsIgnoreCase("SQUARE");
+        ArrayList<String>  duckAndSpy = new ArrayList<>();
+        duckAndSpy.add("DUCK");
+        duckAndSpy.add("SPY");
+
+        ArrayList<String>  sunnyAndSquare = new ArrayList<>();
+        sunnyAndSquare.add("SUNNY");
+        sunnyAndSquare.add("SQUARE");
+
+        listOfMutuallyExclusive.add(evenAndOdd);
+        listOfMutuallyExclusive.add(duckAndSpy);
+        listOfMutuallyExclusive.add(sunnyAndSquare);
+
+        for (ArrayList<String> pair : listOfMutuallyExclusive) {
+            if (pair.contains(firstProp.toUpperCase()) && pair.contains(secondProp.toUpperCase())) {
+                areMutuallyExclusive = true;
+                break;
+            }
+        }
+        return areMutuallyExclusive;
     }
 
+    // Checks the property and appends the name to the
+    // array containing the number property characteristics
+    public static ArrayList<String> propertyChecker(long number) {
+        ArrayList<String> tempArray = new ArrayList<>();
+
+        boolean isBuzz = buzzChecker(number);
+        if (isBuzz) tempArray.add("buzz");
+
+        boolean isDuck = duckChecker(number);
+        if (isDuck) tempArray.add("duck");
+
+        boolean isPalindromic = palindromicChecker(number);
+        if (isPalindromic) tempArray.add("palindromic");
+
+        boolean isGapful = gapfulChecker(number);
+        if (isGapful) tempArray.add("gapful");
+
+        boolean isSpy = spyChecker(number);
+        if (isSpy) tempArray.add("spy");
+
+        boolean isSquare = perfectSquareChecker(number);
+        if (isSquare) tempArray.add("square");
+
+        boolean isSunny = sunnyChecker(number);
+        if (isSunny) tempArray.add("sunny");
+
+        boolean isEven = evenChecker(number);
+        if (isEven) tempArray.add("even");
+
+        boolean isOdd = !isEven;
+        if (isOdd) tempArray.add("odd");
+
+        return tempArray;
+    }
 
 
     public static void main(String[] args) {
         // write your code here
         long number;
-        boolean isOdd;
-        boolean isEven;
-        boolean isBuzz;
-        boolean isDuck;
-        boolean isPalindromic;
-        boolean isGapful;
         boolean isReadyToCheck;
-        boolean isSpy;
 
         String inputString;
 
@@ -360,16 +451,18 @@ public class Main {
 
         System.out.println("Welcome to Amazing Numbers!");
         System.out.println();
+        // Prints the welcome message
         welcomeMessage();
 
+        // Loops until 0 is entered as the first input.
         while(true) {
-
-
             System.out.println();
+            // Gets the input requests
             System.out.print("Enter a request : ");
             inputString = scanner.nextLine();
             System.out.println();
 
+            // Splits the input into an array, uses space
             String[] inputArray = inputString.split(" ");
 
             isReadyToCheck = isGoodToTest(inputArray);
@@ -384,111 +477,79 @@ public class Main {
                     break;
                 }
 
+                // For one number, calculate and print the properties
+                // of the number in true or false format
                 else if (inputArray.length == 1) {
                     // Displays properties in a true or false format
                     trueOrFalsePropertyDisplay(inputArray);
                 }
 
+                // For two numbers, print the list of
+                // numbers with their properties;
                 else if (inputArray.length == 2) {
                     // Displays number properties in a list format
                     for (int i = 0; i < Long.parseLong(inputArray[1]); i++ ) {
-                        ArrayList<String> tempArray = new ArrayList<>();
+                        ArrayList<String> tempArray;
                         number = Long.parseLong(inputArray[0]) + i;
 
                         // Checks the property and appends the name to the
                         // array containing the number property characteristics
-                        isBuzz = buzzChecker(number);
-                        if (isBuzz) tempArray.add("buzz");
-
-                        isDuck = duckChecker(number);
-                        if (isDuck) tempArray.add("duck");
-
-                        isPalindromic = palindromicChecker(number);
-                        if (isPalindromic) tempArray.add("palindromic");
-
-                        isGapful = gapfulChecker(number);
-                        if (isGapful) tempArray.add("gapful");
-
-                        isSpy = spyChecker(number);
-                        if (isSpy) tempArray.add("spy");
-
-                        isEven = evenChecker(number);
-                        if (isEven) tempArray.add("even");
-
-                        isOdd = !isEven;
-                        if (isOdd) tempArray.add("odd");
-
-
+                        tempArray = propertyChecker(number);
                         propertyListDisplay(tempArray, number);
 
                     }
 
                 }
 
-                else {
+                // For two numbers and one property,
+                // print the numbers with this property only;
+                else if (inputArray.length == 3) {
                     long requiredNumber = Long.parseLong(inputArray[1]);
                     long count = 0;
                     long reqNumberCounter = 0;
+                    String neededProp1 = inputArray[2].toLowerCase();
+
+                    while (reqNumberCounter < requiredNumber) {
+                        ArrayList<String> numPropertiesArray;
+
+                        long tempNum = Long.parseLong(inputArray[0]) + count;
+
+                        numPropertiesArray = propertyChecker(tempNum);
+
+                        if (numPropertiesArray.contains(neededProp1)) {
+                            // Checks the property and appends the name to the
+                            // array containing the number property characteristics
+                            propertyListDisplay(numPropertiesArray, tempNum);
+                            reqNumberCounter++;
+                        }
+
+                        count++;
+                    }
+                }
+
+                // For two numbers and two properties, print
+                // the numbers that have both properties.
+                else {
+
+                    long requiredNumber = Long.parseLong(inputArray[1]);
+                    long count = 0;
+                    long reqNumberCounter = 0;
+                    String neededProp1 = inputArray[2].toLowerCase();
+                    String neededProp2 = inputArray[3].toLowerCase();
 
 
                     while (reqNumberCounter < requiredNumber) {
-                        ArrayList<String> tempArray = new ArrayList<>();
+                        ArrayList<String> numPropertiesArray;
 
                         long tempNum = Long.parseLong(inputArray[0]) + count;
-                        boolean isOfTheProperty = false;
 
-                        switch (inputArray[2].toUpperCase()) {
-                            case "BUZZ"         :
-                                isOfTheProperty = buzzChecker(tempNum);
-                                break;
-                            case "DUCK"         :
-                                isOfTheProperty = duckChecker(tempNum);
-                                break;
-                            case "PALINDROMIC"  :
-                                isOfTheProperty = palindromicChecker(tempNum);
-                                break;
-                            case "GAPFUL"       :
-                                isOfTheProperty = gapfulChecker(tempNum);
-                                break;
-                            case "SPY"          :
-                                isOfTheProperty = spyChecker(tempNum);
-                                break;
-                            case "EVEN"         :
-                                isOfTheProperty = evenChecker(tempNum);
-                                break;
-                            case "ODD"          :
-                                isOfTheProperty = !evenChecker(tempNum);
-                                break;
-                        }
+                        numPropertiesArray = propertyChecker(tempNum);
 
-                        if (isOfTheProperty) {
+                        if (numPropertiesArray.contains(neededProp1) && numPropertiesArray.contains(neededProp2)) {
                             // Checks the property and appends the name to the
                             // array containing the number property characteristics
-
-                            isBuzz = buzzChecker(tempNum);
-                            if (isBuzz) tempArray.add("buzz");
-
-                            isDuck = duckChecker(tempNum);
-                            if (isDuck) tempArray.add("duck");
-
-                            isPalindromic = palindromicChecker(tempNum);
-                            if (isPalindromic) tempArray.add("palindromic");
-
-                            isGapful = gapfulChecker(tempNum);
-                            if (isGapful) tempArray.add("gapful");
-
-                            isSpy = spyChecker(tempNum);
-                            if (isSpy) tempArray.add("spy");
-
-                            isEven = evenChecker(tempNum);
-                            if (isEven) tempArray.add("even");
-
-                            isOdd = !isEven;
-                            if (isOdd) tempArray.add("odd");
-
+                            propertyListDisplay(numPropertiesArray, tempNum);
                             reqNumberCounter++;
-
-                            propertyListDisplay(tempArray, tempNum);
                         }
 
                         count++;
