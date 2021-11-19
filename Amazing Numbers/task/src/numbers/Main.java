@@ -215,7 +215,6 @@ public class Main {
         return reversedNumber.toString().equals(numberString);
     }
 
-
     // Checks if the number
     // is gapful number
     public static boolean gapfulChecker(long num) {
